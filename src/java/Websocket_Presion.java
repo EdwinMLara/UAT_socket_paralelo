@@ -21,8 +21,8 @@ import javax.websocket.server.ServerEndpoint;
  *
  * @author emlar
  */
-@ServerEndpoint("/WebsocketTemperatura")
-public class Websocket_Temperatura {
+@ServerEndpoint("/WebsocketPresion")
+public class Websocket_Presion {
     static Set<Session> users = Collections.synchronizedSet(new HashSet<Session>());
     
     @OnOpen
@@ -33,7 +33,7 @@ public class Websocket_Temperatura {
     
     @OnMessage
     public void onMessage(String onmessage) throws IOException{
-                 System.out.println("Temperatura " + onmessage);  
+                 System.out.println("Presion " + onmessage);  
                  send_Message(onmessage);
     }
     
@@ -55,4 +55,5 @@ public class Websocket_Temperatura {
         StackTraceElement[] stackTrace = null;
         t.setStackTrace(stackTrace);
     }
+    
 }

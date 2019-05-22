@@ -15,18 +15,23 @@ and open the template in the editor.
         <form>
             Tiempo en Segundos   <input type="text" id="mensaje" value="5"/>
             <input onclick="enviarMensaje();" value="Enviar Mensaje" type="button"/><br>
-            Mensaje a Humedad    <input type="text" id="re" value="35"/><br>
-            Mensaje a Temperatura<input type="text" id="re2" value="40"/><br>
+            Mensaje a Humedad    <input type="text" id="re" value=""/><br>
+            Mensaje a Temperatura<input type="text" id="re2" value=""/><br>
+            Mensaje a Presion    <input type="text" id="re3" value=""/><br>
         </form>
         
     </body>
         <script>
+            
+            var websocket3 = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketPresion");
             var websocket2 = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketTemperatura");
             var websocket = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketHumedad");
     
             var mensaje = document.getElementById('mensaje');
             var msjEnviar = document.getElementById('re');
             var msjEnviar2 = document.getElementById('re2');
+            var msjEnviar3 = document.getElementById('re3');
+            
             
             
             websocket.onmessage = function processMessage(message){
@@ -37,12 +42,16 @@ and open the template in the editor.
                 msjEnviar2.value = message2.data;
             };
             
+            websocket3.onmessage = function processMessage3(message3){
+                msjEnviar3.value = message3.data;
+            };
+            
             function enviarMensaje(){
                 var text = "Iniciar:";
                 var tiempo = mensaje.value;
                 var msj = text.concat(tiempo);
                 //msjEnviar2.value = msj;
-                
+                websocket3.send(msj);
                 websocket2.send(msj);
                 websocket.send(msj);
             };

@@ -33,7 +33,7 @@ public class Websocket_Humedad {
     
     @OnMessage
     public void onMessage(String onmessage) throws IOException{
-                 System.out.println("Humedad" + onmessage);  
+                 System.out.println("Humedad " + onmessage);  
                  send_Message(onmessage);
     }
     
