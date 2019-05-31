@@ -48,7 +48,7 @@ public class Websocket_Humedad {
             JSONArray array = new JSONArray(onmessage);
                     
             
-            for (int i=1;i<array.length();i++){
+            for (int i=0;i<array.length();i++){
                 list_Humedad_aux.add(array.get(i).toString());
             }
                             
@@ -69,6 +69,7 @@ public class Websocket_Humedad {
             if(onmessage.equals("Fin")){
                 Escribir_fichero ef = new Escribir_fichero();
                 ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Humedad", list_Humedad),path);
+                list_Humedad.clear();
             }else{
                 send_Message(onmessage);
             }

@@ -49,7 +49,7 @@ public class Websocket_Temperatura {
             JSONArray array = new JSONArray(onmessage);
                     
             
-            for (int i=1;i<array.length();i++){
+            for (int i=0;i<array.length();i++){
                 list_Temperatura_aux.add(array.get(i).toString());
             }
                             
@@ -70,6 +70,7 @@ public class Websocket_Temperatura {
             if(onmessage.equals("Fin")){
                 Escribir_fichero ef = new Escribir_fichero();
                 ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Temperatura", list_Temperatura),path);
+                list_Temperatura.clear();
             }else{
                 send_Message(onmessage);
             }
