@@ -25,14 +25,14 @@ import org.json.JSONException;
  *
  * @author emlar
  */
-@ServerEndpoint("/WebsocketECU")
-public class Websocket_Presion {
-    static List<String> list_ECU = new ArrayList<>();
-    static List<String> list_ECU_aux = new ArrayList<>();
+@ServerEndpoint("/WebsocketEncoder")
+public class Websocket_Encoder {
+    static List<String> list_Encoder = new ArrayList<>();
+    static List<String> list_Encoder_aux = new ArrayList<>();
     static Set<Session> users = Collections.synchronizedSet(new HashSet<Session>());
     
-    final static String path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\ECU_archivo.txt";
-    final static String current_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_ECU_archivo.txt";
+    final static String path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\Encoder_archivo.txt";
+    final static String current_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_Encoder_archivo.txt";
     
     @OnOpen
     public void onOpen(Session user){
@@ -42,33 +42,33 @@ public class Websocket_Presion {
     
     @OnMessage
     public void onMessage(String onmessage) throws IOException, JSONException{
-                 System.out.println("ECU " + onmessage);  
+                 System.out.println("Encoder " + onmessage);  
                  if(Manipulacion_datos_listas.isJSONValid(onmessage)){
             JSONArray array = new JSONArray(onmessage);
                     
             
             for (int i=0;i<array.length();i++){
-                list_ECU_aux.add(array.get(i).toString());
+                list_Encoder_aux.add(array.get(i).toString());
             }
                             
                    
-            if (list_ECU.isEmpty()){
-                copy_list(list_ECU,list_ECU_aux);
+            if (list_Encoder.isEmpty()){
+                copy_list(list_Encoder,list_Encoder_aux);
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("ECU", list_ECU_aux),current_path);
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Encoder", list_Encoder_aux),current_path);
             }
             else{
-                llenar_listas_aux(list_ECU,list_ECU_aux);
+                llenar_listas_aux(list_Encoder,list_Encoder_aux);
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("ECU", list_ECU_aux),current_path);
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Encoder", list_Encoder_aux),current_path);
             }
             
-            list_ECU_aux.clear();
+            list_Encoder_aux.clear();
         }else{
             if(onmessage.equals("Fin")){
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("ECU", list_ECU),path);
-                list_ECU.clear();
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Encoder", list_Encoder),path);
+                list_Encoder.clear();
             }else{
                 send_Message(onmessage);
             }

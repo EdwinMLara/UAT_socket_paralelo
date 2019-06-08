@@ -25,14 +25,14 @@ import org.json.JSONException;
  *
  * @author emlar
  */
-@ServerEndpoint("/WebsocketHumedad")
+@ServerEndpoint("/WebsocketFlujo")
 public class Websocket_Humedad {
-    static List<String> list_Humedad = new ArrayList<>();
-    static List<String> list_Humedad_aux = new ArrayList<>();
+    static List<String> list_Flujo = new ArrayList<>();
+    static List<String> list_Flujo_aux = new ArrayList<>();
     static Set<Session> users = Collections.synchronizedSet(new HashSet<Session>());
     
-    final static String path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\humedad_archivo.txt";
-    final static String current_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_humedad_archivo.txt";
+    final static String path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\flujo_archivo.txt";
+    final static String current_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_flujo_archivo.txt";
     
     
     @OnOpen
@@ -43,33 +43,33 @@ public class Websocket_Humedad {
     
     @OnMessage
     public void onMessage(String onmessage) throws IOException, JSONException{
-                 System.out.println("Humedad " + onmessage);  
+                 System.out.println("Flujo " + onmessage);  
                  if(Manipulacion_datos_listas.isJSONValid(onmessage)){
             JSONArray array = new JSONArray(onmessage);
                     
             
             for (int i=0;i<array.length();i++){
-                list_Humedad_aux.add(array.get(i).toString());
+                list_Flujo_aux.add(array.get(i).toString());
             }
                             
                    
-            if (list_Humedad.isEmpty()){
-                copy_list(list_Humedad,list_Humedad_aux);
+            if (list_Flujo.isEmpty()){
+                copy_list(list_Flujo,list_Flujo_aux);
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Humedad", list_Humedad_aux),current_path);
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Flujo", list_Flujo_aux),current_path);
             }
             else{
-                llenar_listas_aux(list_Humedad,list_Humedad_aux);
+                llenar_listas_aux(list_Flujo,list_Flujo_aux);
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Humedad", list_Humedad_aux),current_path);
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Flujo", list_Flujo_aux),current_path);
             }
             
-            list_Humedad_aux.clear();
+            list_Flujo_aux.clear();
         }else{
             if(onmessage.equals("Fin")){
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Humedad", list_Humedad),path);
-                list_Humedad.clear();
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Flujo", list_Flujo),path);
+                list_Flujo.clear();
             }else{
                 send_Message(onmessage);
             }

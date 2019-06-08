@@ -19,11 +19,17 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/Datos"})
 public class Datos extends HttpServlet {
     String datos;
-    final static String current_temperatura_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_temperatura_archivo.txt";
-    final static String current_humedad_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_humedad_archivo.txt";
+    final static String current_celda_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_celda_archivo.txt";
+    final static String current_flujo_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_flujo_archivo.txt";
     
-    final static String temperatura_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\temperatura_archivo.txt";
-    final static String humedad_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\humedad_archivo.txt";
+    final static String celda_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\celda_archivo.txt";
+    final static String flujo_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\flujo_archivo.txt";
+    
+    final static String ecu_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\ECU_archivo.txt";
+    final static String current_ecu_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_ECU_archivo.txt";
+    
+    final static String encoder_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\Encoder_archivo.txt";
+    final static String current_encoder_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_Encoder_archivo.txt";
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,12 +45,16 @@ public class Datos extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         String datos_generales = request.getParameter("Datos_generales");
-        if (datos_generales.equals("0")){
-            datos = cadena_impresion(current_temperatura_path,current_humedad_path);
-        }else if(datos_generales.equals("1")){
-            datos = cadena_impresion(temperatura_path,humedad_path);
-        }else{
-            datos = "Los parámetors de la petición estan erroneos";
+        switch (datos_generales) {
+            case "0":
+                datos = cadena_impresion(current_celda_path,current_flujo_path,current_ecu_path,current_encoder_path);
+                break;
+            case "1":
+                datos = cadena_impresion(celda_path,flujo_path,ecu_path,encoder_path);
+                break;
+            default:
+                datos = "Los parámetors de la petición estan erroneos";
+                break;
         }
     
         try (PrintWriter out = response.getWriter()) {
@@ -61,13 +71,17 @@ public class Datos extends HttpServlet {
         }
     }
     
-    public String cadena_impresion(String path1,String path2){
-        String datos;
-        Leer_fichero fichero_temperatura = new Leer_fichero(path1);
-        datos = fichero_temperatura.leer();
-        Leer_fichero fichero_humedad = new Leer_fichero(path2);
-        datos = datos + fichero_humedad.leer();
-        return  datos;
+    public String cadena_impresion(String path1,String path2,String path3,String path4){
+        String datos2;
+        Leer_fichero fichero_celda = new Leer_fichero(path1);
+        datos2 = fichero_celda.leer();
+        Leer_fichero fichero_flujo = new Leer_fichero(path2);
+        datos2 = datos2 + fichero_flujo.leer();
+        Leer_fichero fichero_ecu = new Leer_fichero(path3);
+        datos2 = datos2 + fichero_ecu.leer();
+        Leer_fichero fichero_encoder = new Leer_fichero(path4);
+        datos2 = datos2 + fichero_encoder.leer();
+        return  datos2;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

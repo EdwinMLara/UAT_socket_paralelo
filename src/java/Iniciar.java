@@ -38,6 +38,7 @@ public class Iniciar extends HttpServlet {
         Websocket_Temperatura.send_Message(msj);
         Websocket_Humedad.send_Message(msj);
         Websocket_Presion.send_Message(msj);
+        Websocket_Encoder.send_Message(msj);
         
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */

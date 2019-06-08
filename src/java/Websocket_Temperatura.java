@@ -25,14 +25,14 @@ import org.json.JSONException;
  *
  * @author emlar
  */
-@ServerEndpoint("/WebsocketTemperatura")
+@ServerEndpoint("/WebsocketCelda")
 public class Websocket_Temperatura {
-    static List<String> list_Temperatura = new ArrayList<>();
-    static List<String> list_Temperatura_aux = new ArrayList<>();
+    static List<String> list_Celda = new ArrayList<>();
+    static List<String> list_Celda_aux = new ArrayList<>();
     static Set<Session> users = Collections.synchronizedSet(new HashSet<Session>());
     
-    final static String path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\temperatura_archivo.txt";
-    final static String current_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_temperatura_archivo.txt";
+    final static String path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\celda_archivo.txt";
+    final static String current_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_celda_archivo.txt";
     
     @OnOpen
     public void onOpen(Session user){
@@ -43,34 +43,34 @@ public class Websocket_Temperatura {
     @OnMessage
     public void onMessage(String onmessage) throws IOException, JSONException{
         
-        System.out.println("Temperatura " + onmessage);  
+        System.out.println("Celda" + onmessage);  
 
         if(Manipulacion_datos_listas.isJSONValid(onmessage)){
             JSONArray array = new JSONArray(onmessage);
                     
             
             for (int i=0;i<array.length();i++){
-                list_Temperatura_aux.add(array.get(i).toString());
+                list_Celda_aux.add(array.get(i).toString());
             }
                             
                    
-            if (list_Temperatura.isEmpty()){
-                copy_list(list_Temperatura,list_Temperatura_aux);
+            if (list_Celda.isEmpty()){
+                copy_list(list_Celda,list_Celda_aux);
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Temperatura", list_Temperatura_aux),current_path);
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Celda", list_Celda_aux),current_path);
             }
             else{
-                llenar_listas_aux(list_Temperatura,list_Temperatura_aux);
+                llenar_listas_aux(list_Celda,list_Celda_aux);
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Temperatura", list_Temperatura_aux),current_path);
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Celda", list_Celda_aux),current_path);
             }
             
-            list_Temperatura_aux.clear();
+            list_Celda_aux.clear();
         }else{
             if(onmessage.equals("Fin")){
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Temperatura", list_Temperatura),path);
-                list_Temperatura.clear();
+                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Celda", list_Celda),path);
+                list_Celda.clear();
             }else{
                 send_Message(onmessage);
             }

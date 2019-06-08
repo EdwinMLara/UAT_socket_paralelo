@@ -15,22 +15,58 @@ and open the template in the editor.
         <form>
             Tiempo en Segundos   <input type="text" id="mensaje" value="5"/>
             <input onclick="enviarMensaje();" value="Enviar Mensaje" type="button"/><br>
-            Mensaje a Humedad    <input type="text" id="re" value=""/><br>
-            Mensaje a Temperatura<input type="text" id="re2" value=""/><br>
-            Mensaje a Presion    <input type="text" id="re3" value=""/><br>
+            Mensaje a Flujo   <input type="text" id="re" value=""/><br>
+            Mensaje a Celda   <input type="text" id="re2" value=""/><br>
+            Mensaje a Ecu     <input type="text" id="re3" value=""/><br>
+            Mensaje a Encoder <input type="text" id="re4" value=""/><br>
         </form>
-        
+        <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+        <span id="timeToRender"></span>
+        <script src="js/canvasjs.min.js"></script>
     </body>
         <script>
-            
-            var websocket3 = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketPresion");
-            var websocket2 = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketTemperatura");
-            var websocket = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketHumedad");
+            var dps = []; 
+            var chart;
+            var xVal = 1;
+            window.onload = function () {
+            chart = new CanvasJS.Chart("chartContainer", {
+                    title :{
+                            text: "Cliente 2"
+                    },
+                    axisY: {
+                            includeZero: false
+                    },      
+                    data: [{
+                            type: "line",
+                            dataPoints: dps
+                    }]
+                });
+                updateChart(xVal,0);
+            };
+
+            var updateChart = function (xVal,yVal) {
+
+                            yVal = yVal +  Math.sin(Math.PI*xVal);
+                            dps.push({
+                                    x: xVal,
+                                    y: yVal
+                            });
+                            xVal++;
+
+                    chart.render();
+                    return xVal;
+            };
+        
+            var websocket4 = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketEncoder");
+            var websocket3 = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketECU");
+            var websocket2 = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketCelda");
+            var websocket = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketFlujo");
     
             var mensaje = document.getElementById('mensaje');
             var msjEnviar = document.getElementById('re');
             var msjEnviar2 = document.getElementById('re2');
             var msjEnviar3 = document.getElementById('re3');
+            var msjEnviar4 = document.getElementById('re4');
             
             
             
@@ -46,11 +82,16 @@ and open the template in the editor.
                 msjEnviar3.value = message3.data;
             };
             
+            websocket4.onmessage = function processMessage4(message4){
+                msjEnviar4.value = message4.data;
+            };
+           
             function enviarMensaje(){
                 var text = "Iniciar:";
                 var tiempo = mensaje.value;
                 var msj = text.concat(tiempo);
                 //msjEnviar2.value = msj;
+                websocket4.send(msj);
                 websocket3.send(msj);
                 websocket2.send(msj);
                 websocket.send(msj);
