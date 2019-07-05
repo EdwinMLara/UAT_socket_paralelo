@@ -1,4 +1,5 @@
 
+import Sockets.WebSocket_propiedades;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,15 +26,12 @@ import org.json.JSONException;
  *
  * @author emlar
  */
-@ServerEndpoint("/WebsocketEncoder")
-public class Websocket_Encoder {
-    static List<String> list_Encoder = new ArrayList<>();
-    static List<String> list_Encoder_aux = new ArrayList<>();
-    static Set<Session> users = Collections.synchronizedSet(new HashSet<Session>());
+@ServerEndpoint("/WebsocketFlujo")
+public class Websocket_Flujo extends WebSocket_propiedades{
     
-    final static String path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\Encoder_archivo.txt";
-    final static String current_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\current_Encoder_archivo.txt";
-    
+    public Websocket_Flujo(){
+        super("flujo_archivo.txt");
+    }
     @OnOpen
     public void onOpen(Session user){
         users.add(user);
@@ -42,33 +40,31 @@ public class Websocket_Encoder {
     
     @OnMessage
     public void onMessage(String onmessage) throws IOException, JSONException{
-                 System.out.println("Encoder " + onmessage);  
-                 if(Manipulacion_datos_listas.isJSONValid(onmessage)){
+        System.out.println("Flujo " + onmessage);  
+        if(Manipulacion_datos_listas.isJSONValid(onmessage)){
             JSONArray array = new JSONArray(onmessage);
                     
-            
             for (int i=0;i<array.length();i++){
-                list_Encoder_aux.add(array.get(i).toString());
+                list_aux.add(array.get(i).toString());
             }
                             
                    
-            if (list_Encoder.isEmpty()){
-                copy_list(list_Encoder,list_Encoder_aux);
-                Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Encoder", list_Encoder_aux),current_path);
+            if (list.isEmpty()){
+                copy_list(list,list_aux);
+                datos = Manipulacion_datos_listas.Crear_cadena_escritura("Flujo", list_aux);
             }
             else{
-                llenar_listas_aux(list_Encoder,list_Encoder_aux);
-                Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Encoder", list_Encoder_aux),current_path);
+                llenar_listas_aux(list,list_aux);
+                datos = Manipulacion_datos_listas.Crear_cadena_escritura("Flujo", list_aux);
             }
             
-            list_Encoder_aux.clear();
+            list_aux.clear();
         }else{
             if(onmessage.equals("Fin")){
                 Escribir_fichero ef = new Escribir_fichero();
-                ef.Escrbir(Manipulacion_datos_listas.Crear_cadena_escritura("Encoder", list_Encoder),path);
-                list_Encoder.clear();
+                datos_generales = Manipulacion_datos_listas.Crear_cadena_escritura("Flujo", list);
+                ef.Escrbir(datos_generales,path_general);
+                list.clear();
             }else{
                 send_Message(onmessage);
             }

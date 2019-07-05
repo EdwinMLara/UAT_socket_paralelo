@@ -16,9 +16,15 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author emlar
  */
-@WebServlet(urlPatterns = {"/Iniciar"})
-public class Iniciar extends HttpServlet {
-
+@WebServlet(urlPatterns = {"/Datos"})
+public class Datos extends HttpServlet {
+    String datos;
+    
+    final static String celda_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\celda_archivo.txt";
+    final static String flujo_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\flujo_archivo.txt";
+    final static String ecu_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\ECU_archivo.txt";
+    final static String encoder_path = "C:\\Users\\emlar\\OneDrive\\Documentos\\NetBeansProjects\\socket_paralelo\\web\\Encoder_archivo.txt";
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -27,28 +33,39 @@ public class Iniciar extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
-     */
+     */ 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        String tiempo = request.getParameter("Tiempo");
-        String msj = "Iniciar:"+tiempo;
-        
-        Websocket_Temperatura.send_Message(msj);
-        Websocket_Humedad.send_Message(msj);
-        Websocket_Presion.send_Message(msj);
-        Websocket_Encoder.send_Message(msj);
-        
+        String datos_generales = request.getParameter("Datos_generales");
+        switch (datos_generales) {
+            case "0":
+                datos = Websocket_Celda.datos;
+                datos += Websocket_Flujo.datos;
+                datos += Websocket_ECU.datos;
+                datos += Websocket_Encoder.datos;
+                break;
+            case "1":
+                datos = Websocket_Celda.datos_generales;
+                datos += Websocket_Flujo.datos_generales;
+                datos += Websocket_ECU.datos_generales;
+                datos += Websocket_Encoder.datos_generales;
+                break;
+            default:
+                datos = "Los parámetors de la petición estan erroneos";
+                break;
+        }
+    
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Iniciar</title>");            
+            out.println("<title>Servlet Datos</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>" + msj + "</h1>");
+            out.println("<p>"+datos+"</p>");
             out.println("</body>");
             out.println("</html>");
         }
