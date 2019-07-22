@@ -30,13 +30,13 @@ import org.json.JSONException;
 public class Websocket_ECU extends WebSocket_propiedades{
     
     public Websocket_ECU(){
-        super("ECU_archivo.txt");
+        super("ECU_archivo.txt",Collections.synchronizedSet(new HashSet<Session>()),new ArrayList<>(),new ArrayList<>());
     }
     
     @OnOpen
     public void onOpen(Session user){
         users.add(user);
-        System.out.println("Conected: " + user.getId());
+        System.out.println("Conected Ecu: " + user.getId());
     }
     
     @OnMessage

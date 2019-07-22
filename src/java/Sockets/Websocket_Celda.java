@@ -30,20 +30,20 @@ import org.json.JSONException;
 public class Websocket_Celda extends WebSocket_propiedades{
     
     public Websocket_Celda(){
-        super("celda_archivo.txt");
+        super("celda_archivo.txt",Collections.synchronizedSet(new HashSet<Session>()),new ArrayList<>(),new ArrayList<>());
         
     }
     
     @OnOpen
     public void onOpen(Session user){
         users.add(user);
-        System.out.println("Conected: " + user.getId());
+        System.out.println("Conected celda: " + user.getId());
     }
     
     @OnMessage
     public void onMessage(String onmessage) throws IOException, JSONException{
         
-        System.out.println("Celda" + onmessage);  
+        System.out.println("Celda " + onmessage);  
 
         if(Manipulacion_datos_listas.isJSONValid(onmessage)){
             JSONArray array = new JSONArray(onmessage);

@@ -30,13 +30,13 @@ import org.json.JSONException;
 public class Websocket_Encoder extends WebSocket_propiedades{
     
     public Websocket_Encoder(){
-        super("Encoder_archivo.txt");
+        super("Encoder_archivo.txt",Collections.synchronizedSet(new HashSet<Session>()),new ArrayList<>(),new ArrayList<>());
     }
     
     @OnOpen
     public void onOpen(Session user){
         users.add(user);
-        System.out.println("Conected: " + user.getId());
+        System.out.println("Conected Encoder: " + user.getId());
     }
     
     @OnMessage

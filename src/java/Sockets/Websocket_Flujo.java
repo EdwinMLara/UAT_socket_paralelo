@@ -30,12 +30,12 @@ import org.json.JSONException;
 public class Websocket_Flujo extends WebSocket_propiedades{
     
     public Websocket_Flujo(){
-        super("flujo_archivo.txt");
+        super("flujo_archivo.txt",Collections.synchronizedSet(new HashSet<Session>()),new ArrayList<>(),new ArrayList<>());
     }
     @OnOpen
     public void onOpen(Session user){
         users.add(user);
-        System.out.println("Conected: " + user.getId());
+        System.out.println("Conected flujo: " + user.getId());
     }
     
     @OnMessage
@@ -79,24 +79,7 @@ public class Websocket_Flujo extends WebSocket_propiedades{
         }
     }
     
-    public void llenar_listas_aux(List<String> list,List<String> list_aux){
-        if(list.isEmpty()){
-            list_aux.stream().forEach((aux) -> {
-                list.add(aux);
-            });
-        }else{
-            list.addAll(list_aux);
-        }
-    }
-    
- 
-    public void copy_list(List<String> list, List<String> list_aux){
-        list_aux.stream().forEach((aux)->{
-            list.add(aux);
-        });
-    }
-    
-     @OnClose
+    @OnClose
     public void handleClose(Session userSession){
         users.remove(userSession);
     }
