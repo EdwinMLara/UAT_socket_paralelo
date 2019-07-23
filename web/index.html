@@ -9,6 +9,8 @@ and open the template in the editor.
         <title>Servidor con Sockets en paralelo</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js/canvasjs.min.js"></script>
+        <script src="js/canvas_gauges.js"></script>
     </head>
     <body>
         <div>Probando WebSocket en Paraleo</div>
@@ -22,10 +24,13 @@ and open the template in the editor.
         </form>
         <div id="chartContainer" style="height: 370px; width: 100%;"></div>
         <span id="timeToRender"></span>
-        <div id="datos"></div>
-        <script src="js/canvasjs.min.js"></script>
+        <div id="rpm">
+            <canvas id="canvas-id"></canvas>
+        </div>
+        
     </body>
         <script>
+            
             var dat = [];
             var dps = [];
             var inicio;
@@ -43,31 +48,28 @@ and open the template in the editor.
                             type: "line",
                             dataPoints: dps
                     }]
-                });
-                
-                dps.push({
-                            x: 0,
-                            y: 0
-                    });
-                    
+                });         
                 chart.render();
                 inicio = 0;
             };
 
-            var fin updateChart = function (inicio,datos) {
+            function updateChart(ini,datos){
+                var fin;
                 var str = datos;
                 var array = str.split(",");
-
-                for (var i=incio;i<array.length;i++){            
+                console.log(array.length);
+                for (var i=0;i<array.length;i++){            
                     dps.push({
-                            x: i,
+                            x: ini+i,
                             y: parseFloat(array[i])
                     });
                 }
-                chart.render();
-                fin = inicio + 
-                return inicio ;
+                fin = ini + array.length;
+                console.log(dps.length);
+                chart.render();  
+                return fin;
             };
+            
             var mensaje = document.getElementById('mensaje');          
             var websocket_flujo = new WebSocket("ws://localhost:8080/socket_paralelo/WebsocketFlujo");
             websocket_flujo.onmessage = function Mensaje_flujo(message){
@@ -94,7 +96,7 @@ and open the template in the editor.
             websocket_encoder.onmessage = function Mensaje_encoder(message4){
                 var encoder = document.getElementById('encoder');
                 console.log("Encoder ".concat(message4.data));               
-                updateChart(message4.data);
+                inicio = updateChart(inicio,message4.data);
             };
                
             function enviarMensaje(){
@@ -104,7 +106,55 @@ and open the template in the editor.
                 }
                 var aux = dat.toString();
                 websocket_encoder.send(aux); 
+                dat = [];
+                gauge.update({ 
+                    value: Math.random() * -220 + 220, 
+                });
             };
+            
+            var gauge = new RadialGauge({
+                renderTo: 'canvas-id',
+                width: 300,
+                height: 300,
+                units: "Km/h",
+                title: "RPM",
+                value: 0,
+                minValue: 0,
+                maxValue: 220,
+                majorTicks: [
+                    "0",
+                    "20",
+                    "40",
+                    "60",
+                    "80",
+                    "100",
+                    "120",
+                    "140",
+                    "160",
+                    "180",
+                    "200",
+                    "220"
+                ],
+                minorTicks: 2,
+                strokeTicks: true,
+                highlights: [
+                    {
+                        "from": 160,
+                        "to": 220,
+                        "color": "rgba(200, 50, 50, .75)"
+                    }
+                ],
+                colorPlate: "#fff",
+                borderShadowWidth: 0,
+                borders: false,
+                needleType: "arrow",
+                needleWidth: 2,
+                needleCircleSize: 7,
+                needleCircleOuter: true,
+                needleCircleInner: false,
+                animationDuration: 1500,
+                animationRule: "linear"
+            }).draw();          
             
         </script>
     
